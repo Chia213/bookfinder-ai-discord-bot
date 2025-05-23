@@ -17,14 +17,14 @@ Create an AI-powered Discord bot that helps users find books based on descriptio
 
 #### Setup & Architecture (Day 1 - Morning)
 - [x] Create GitHub repository
-- [x] Set up basic Node.js project
-- [x] Install dependencies (discord.js, openAI, axios, dotenv)
+- [x] Set up Python project with virtual environment
+- [x] Install dependencies (discord.py, openai, requests, python-dotenv)
 - [x] Create basic file structure
 - [ ] Create .env file with API keys (discord, openAI, Google Books)
 - [ ] Test connection to Discord API
 - [ ] Test connection to OpenAI API
 - [ ] Test connection to Google Books API
-- [ ] Design bot architecture (services, commands, utils)
+- [ ] Design bot architecture (services, cogs, utils)
 
 #### Core Functionality (Day 1 - Afternoon to Day 2 - Morning)
 - [x] Create OpenAI service for AI interactions

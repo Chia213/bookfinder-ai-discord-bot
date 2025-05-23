@@ -4,8 +4,8 @@ This guide will help you set up and run the BookFinder AI Discord Bot on your lo
 
 ## Prerequisites
 
-- [Node.js](https://nodejs.org/) (v16.9.0 or higher)
-- [npm](https://www.npmjs.com/) (comes with Node.js)
+- [Python](https://www.python.org/) (v3.8 or higher)
+- [pip](https://pip.pypa.io/en/stable/) (comes with Python)
 - [Discord Developer Account](https://discord.com/developers/applications)
 - [OpenAI API Key](https://platform.openai.com/)
 - [Google Cloud Platform Account](https://console.cloud.google.com/) (for Google Books API)
@@ -53,12 +53,23 @@ This guide will help you set up and run the BookFinder AI Discord Bot on your lo
    cd bookfinder-ai-discord-bot
    ```
 
-2. Install dependencies:
+2. Create and activate a virtual environment:
    ```
-   npm install
+   python -m venv venv
+   
+   # On Windows
+   venv\Scripts\activate
+   
+   # On macOS/Linux
+   source venv/bin/activate
    ```
 
-3. Create a `.env` file in the root directory with the following content:
+3. Install dependencies:
+   ```
+   pip install -r requirements.txt
+   ```
+
+4. Create a `.env` file in the root directory with the following content:
    ```
    # Discord Bot Token from https://discord.com/developers/applications
    DISCORD_TOKEN=your_discord_bot_token_here
@@ -76,14 +87,9 @@ This guide will help you set up and run the BookFinder AI Discord Bot on your lo
    ```
    Replace all placeholder values with your actual API keys.
 
-4. Deploy the slash commands to your Discord server:
-   ```
-   npm run deploy-commands
-   ```
-
 5. Start the bot:
    ```
-   npm start
+   python main.py
    ```
 
 ## Step 4: Usage
@@ -92,6 +98,7 @@ Once the bot is running and has been added to your server, you can use the follo
 
 - `/findbook [query]` - Search for books based on your description
 - `/recommend [preferences]` - Get book recommendations based on your preferences
+- `/bookhelp` - Get help with using the bot's commands
 
 Example queries:
 - `/findbook a novel about time travel in Victorian England`
@@ -100,9 +107,10 @@ Example queries:
 ## Troubleshooting
 
 - **Bot not responding**: Check that your bot token is correct and that the bot has the necessary permissions
-- **Commands not working**: Ensure you've deployed the commands using `npm run deploy-commands`
+- **Commands not working**: Ensure the bot is properly connected to Discord and commands are synced
 - **API errors**: Verify your API keys and check your console logs for specific error messages
 - **Rate limiting**: If you're hitting API rate limits, consider implementing caching or reducing usage
+- **ModuleNotFoundError**: Make sure you've activated your virtual environment and installed all dependencies
 
 ## Deployment
 
@@ -110,6 +118,7 @@ For production deployment, consider using services like:
 - [Heroku](https://www.heroku.com/)
 - [Railway](https://railway.app/)
 - [Render](https://render.com/)
+- [PythonAnywhere](https://www.pythonanywhere.com/)
 - [Digital Ocean](https://www.digitalocean.com/)
 
 Make sure to set up your environment variables on your hosting platform. 
