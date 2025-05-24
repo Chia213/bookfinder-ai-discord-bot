@@ -57,17 +57,17 @@ class BookService:
             if 'items' not in data:
                 return []
                 
-            # Process results
+            # Process results with null safety
             books = []
             for item in data['items']:
                 volume_info = item.get('volumeInfo', {})
                 books.append({
                     'id': item.get('id'),
                     'title': volume_info.get('title', 'Unknown Title'),
-                    'authors': volume_info.get('authors', ['Unknown Author']),
+                    'authors': volume_info.get('authors') or ['Unknown Author'],
                     'description': volume_info.get('description', 'No description available'),
                     'publishedDate': volume_info.get('publishedDate'),
-                    'categories': volume_info.get('categories'),
+                    'categories': volume_info.get('categories') or [],
                     'imageLinks': volume_info.get('imageLinks'),
                     'previewLink': volume_info.get('previewLink')
                 })
@@ -102,10 +102,10 @@ class BookService:
             return {
                 'id': data.get('id'),
                 'title': volume_info.get('title', 'Unknown Title'),
-                'authors': volume_info.get('authors', ['Unknown Author']),
+                'authors': volume_info.get('authors') or ['Unknown Author'],
                 'description': volume_info.get('description', 'No description available'),
                 'publishedDate': volume_info.get('publishedDate'),
-                'categories': volume_info.get('categories'),
+                'categories': volume_info.get('categories') or [],
                 'pageCount': volume_info.get('pageCount'),
                 'imageLinks': volume_info.get('imageLinks'),
                 'previewLink': volume_info.get('previewLink'),
@@ -143,15 +143,15 @@ class BookService:
             if 'docs' not in data or len(data['docs']) == 0:
                 return []
                 
-            # Process results
+            # Process results with null safety
             books = []
             for book in data['docs']:
                 books.append({
                     'id': book.get('key'),
                     'title': book.get('title', 'Unknown Title'),
-                    'authors': book.get('author_name', ['Unknown Author']),
+                    'authors': book.get('author_name') or ['Unknown Author'],
                     'publishedDate': str(book.get('first_publish_year', '')),
-                    'categories': book.get('subject'),
+                    'categories': book.get('subject') or [],
                     'imageLinks': {
                         'thumbnail': f"https://covers.openlibrary.org/b/id/{book.get('cover_i')}-M.jpg" if book.get('cover_i') else None
                     },

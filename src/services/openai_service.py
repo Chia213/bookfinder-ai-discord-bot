@@ -53,7 +53,23 @@ class OpenAIService:
         Returns:
             dict: Extracted search parameters
         """
-        system_prompt = """        You are a helpful AI assistant that extracts search parameters from user queries about books.                IMPORTANT: Always include a "general_query" field with the user's original query.                Extract the following information if present:        - title: Book title or partial title        - author: Author name          - genre: Genre or category        - general_query: Always include the original user query                Format your response as a valid JSON object. Example:        {"title": "samurai", "genre": "historical fiction", "general_query": "samurai books"}                If you cannot extract specific fields, return:        {"general_query": "user's original query here"}        """
+        system_prompt = """
+        You are a helpful AI assistant that extracts search parameters from user queries about books.
+        
+        IMPORTANT: Always include a "general_query" field with the user's original query.
+        
+        Extract the following information if present:
+        - title: Book title or partial title
+        - author: Author name
+        - genre: Genre or category
+        - general_query: Always include the original user query
+        
+        Format your response as a valid JSON object. Example:
+        {"title": "samurai", "genre": "historical fiction", "general_query": "samurai books"}
+        
+        If you cannot extract specific fields, return:
+        {"general_query": "user's original query here"}
+        """
         
         try:
             response = await OpenAIService.generate_response(query, system_prompt)
@@ -78,15 +94,18 @@ class OpenAIService:
         if not books or len(books) == 0:
             return f"I couldn't find any books matching '{user_query}'. You might want to try different keywords or check the spelling."
         
-        # Prepare book data for the AI
+        # Prepare book data for the AI with null safety
         books_data = []
         for book in books[:3]:  # Limit to top 3 books
+            authors = book.get("authors") or ["Unknown"]
+            categories = book.get("categories") or ["Unknown"]
+            
             books_data.append({
                 "title": book.get("title", "Unknown"),
-                "author": ", ".join(book.get("authors", ["Unknown"])),
+                "author": ", ".join(authors),
                 "description": book.get("description", "No description available"),
                 "publishedDate": book.get("publishedDate", "Unknown"),
-                "categories": ", ".join(book.get("categories", ["Unknown"]))
+                "categories": ", ".join(categories)
             })
         
         try:

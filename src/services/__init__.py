@@ -1,1 +1,1 @@
-# Services package initialization file 
+# Services package initialization file Utveckla en intelligent Discord bot som använder Natural Language Processing (NLP) och AI för att förstå användarnas vaga bokbeskrivningar och omvandla dem till precisa sökningar. Projektet utforskar hur GPT-3.5 kan fungera som en intelligent mellanhand mellan människans naturliga språk och strukturerade databaser, samtidigt som det demonstrerar praktisk tillämpning av conversational AI, prompt engineering och multi-API integration för att lösa verkliga informationssökningsproblem.

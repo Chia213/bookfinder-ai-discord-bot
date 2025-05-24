@@ -19,4 +19,4 @@ GOOGLE_BOOKS_API_KEY = os.getenv('GOOGLE_BOOKS_API_KEY')
 GOOGLE_BOOKS_BASE_URL = 'https://www.googleapis.com/books/v1'
 
 # Open Library API configuration
-OPEN_LIBRARY_BASE_URL = 'https://openlibrary.org/api' 
+OPEN_LIBRARY_BASE_URL = 'https://openlibrary.org' 
