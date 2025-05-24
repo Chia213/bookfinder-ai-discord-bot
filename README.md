@@ -188,17 +188,54 @@ This project was developed as part of an AI/ML course to demonstrate advanced co
 - User Experience Design
 - Privacy-Compliant AI Systems
 
-## 📝 License
+## 🏗️ Project Structure
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+```
+bookfinder-ai-discord-bot/
+├── src/                          # Source code directory
+│   ├── cogs/                     # Discord command modules
+│   │   ├── analytics.py          # User analytics & system stats commands
+│   │   ├── bookhelp.py           # Help and guidance commands
+│   │   ├── findbook.py           # AI-powered book search command
+│   │   ├── recommend.py          # RAG personalized recommendations
+│   │   └── __init__.py
+│   ├── services/                 # Business logic services
+│   │   ├── book_service.py       # Google Books & Open Library integration
+│   │   ├── openai_service.py     # OpenAI GPT-3.5-turbo integration
+│   │   ├── rag_service.py        # RAG system & user interaction logging
+│   │   └── __init__.py
+│   ├── utils/                    # Utility functions
+│   │   └── __init__.py
+│   ├── bot.py                    # Main bot application
+│   ├── config.py                 # Configuration management
+│   └── __init__.py
+├── screenshots/                  # Project demonstration images
+│   ├── ai-book-search.png
+│   ├── professional-book-display.png
+│   ├── rag-personalized-recommendations.png
+│   └── user-analytics-dashboard.png
+├── main.py                       # Application entry point
+├── requirements.txt              # Python dependencies
+├── user_interactions.log         # RAG system data storage
+├── LICENSE                       # MIT License file
+├── README.md                     # Project documentation
+└── .gitignore                    # Git ignore patterns
+```
 
-## 🙏 Acknowledgments
+### **🎯 Architecture Overview**
 
-- **OpenAI** for providing advanced language models
-- **Google Books** for comprehensive book database
-- **Discord.py Community** for excellent documentation
-- **Open Library** for additional book metadata
+- **`src/cogs/`** - Modular Discord commands using discord.py's Cog system
+- **`src/services/`** - Clean separation of business logic from presentation
+- **`src/bot.py`** - Core Discord bot setup and event handling
+- **`src/config.py`** - Centralized configuration and environment management
+- **RAG System** - User interaction logging and personalized recommendations
+- **Multi-API Design** - Primary/fallback pattern for reliability
 
----
+## 📝 License & Open Source
 
-**Built with ❤️ for book lovers everywhere**
+**This project is proudly open source!** 🌟
+
+## 🎓 Academic Development
+
+**This project was developed as part of an AI/ML course** to demonstrate advanced concepts and practical applications in artificial intelligence.
+
