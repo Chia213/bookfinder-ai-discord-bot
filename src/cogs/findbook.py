@@ -4,6 +4,7 @@ from discord.ext import commands
 import logging
 from src.services.openai_service import OpenAIService
 from src.services.book_service import BookService
+from src.services.rag_service import RAGService
 
 logger = logging.getLogger('bookfinder.commands.findbook')
 
@@ -35,11 +36,30 @@ class FindBookCog(commands.Cog):
             if not books:
                 # If no books found, use AI to provide a helpful response
                 ai_response = await OpenAIService.enhance_book_results([], query)
+                
+                # Log the interaction with RAG
+                RAGService.log_interaction(
+                    user_id=interaction.user.id,
+                    query=query,
+                    books_found=[],
+                    command_type="findbook",
+                    response_text=ai_response
+                )
+                
                 await interaction.followup.send(ai_response)
                 return
             
             # Get AI to enhance the book results with context
             ai_response = await OpenAIService.enhance_book_results(books, query)
+            
+            # Log the interaction with RAG BEFORE creating embeds
+            RAGService.log_interaction(
+                user_id=interaction.user.id,
+                query=query,
+                books_found=books,
+                command_type="findbook",
+                response_text=ai_response
+            )
             
             # Create embeds for the books
             embeds = []
@@ -83,6 +103,16 @@ class FindBookCog(commands.Cog):
                 
         except Exception as e:
             logger.error(f"Error executing findbook command: {e}")
+            
+            # Log the error interaction
+            RAGService.log_interaction(
+                user_id=interaction.user.id,
+                query=query,
+                books_found=[],
+                command_type="findbook",
+                response_text="Error occurred"
+            )
+            
             await interaction.followup.send(
                 "Sorry, I encountered an error while searching for books. Please try again later."
             )

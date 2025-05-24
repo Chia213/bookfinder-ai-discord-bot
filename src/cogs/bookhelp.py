@@ -36,6 +36,14 @@ class BookHelpCog(commands.Cog):
         )
         
         help_embed.add_field(
+            name="🔥 NEW: RAG System Commands",
+            value="**`/myhistory`** - View your search history and preferences (private)\n" +
+                  "**`/analytics`** - View system usage statistics\n" +
+                  "**`/clearhistory`** - Clear your personal data (GDPR compliance)",
+            inline=False
+        )
+        
+        help_embed.add_field(
             name="Tips for Better Results",
             value="• Be specific about genres, themes, or plot elements\n" +
                   "• Mention similar books or authors you enjoy\n" +
@@ -44,8 +52,17 @@ class BookHelpCog(commands.Cog):
             inline=False
         )
         
+        help_embed.add_field(
+            name="🤖 RAG Features",
+            value="• **Personalized Recommendations**: Based on your search history\n" +
+                  "• **Data Persistence**: All interactions are saved and analyzed\n" +
+                  "• **Privacy Controls**: You can view and clear your data anytime\n" +
+                  "• **Usage Analytics**: System-wide statistics available",
+            inline=False
+        )
+        
         help_embed.set_footer(
-            text="BookFinder AI uses OpenAI and book databases to provide intelligent recommendations"
+            text="BookFinder AI uses OpenAI, Google Books API, and RAG system for intelligent recommendations"
         )
         
         await interaction.response.send_message(embed=help_embed)

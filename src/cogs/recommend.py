@@ -5,6 +5,7 @@ import json
 import logging
 from src.services.openai_service import OpenAIService
 from src.services.book_service import BookService
+from src.services.rag_service import RAGService
 
 logger = logging.getLogger('bookfinder.commands.recommend')
 
@@ -26,6 +27,13 @@ class RecommendCog(commands.Cog):
         await interaction.response.defer()
         
         try:
+            # Check if user has previous preferences from RAG
+            user_prefs = RAGService.get_user_preferences(interaction.user.id)
+            enhanced_preferences = preferences
+            
+            if user_prefs.get("genres") or user_prefs.get("authors"):
+                enhanced_preferences += f" (Previously liked: {', '.join(user_prefs.get('genres', [])[:3])})"
+            
             # Create a recommendation prompt for the AI
             system_prompt = """
             You are a knowledgeable librarian who helps users find books they might enjoy.
@@ -42,7 +50,7 @@ class RecommendCog(commands.Cog):
             
             # Get recommendations from AI
             ai_recommendation_json = await OpenAIService.generate_response(
-                f"Based on these preferences, recommend specific books: {preferences}",
+                f"Based on these preferences, recommend specific books: {enhanced_preferences}",
                 system_prompt
             )
             
@@ -57,6 +65,15 @@ class RecommendCog(commands.Cog):
             except Exception as e:
                 logger.error(f"Error parsing AI recommendations: {e}")
                 logger.info(f"Raw AI response: {ai_recommendation_json}")
+                
+                # Log the interaction even if parsing fails
+                RAGService.log_interaction(
+                    user_id=interaction.user.id,
+                    query=preferences,
+                    books_found=[],
+                    command_type="recommend",
+                    response_text=ai_recommendation_json[:200]
+                )
                 
                 # Send the raw response if parsing fails
                 await interaction.followup.send(
@@ -95,8 +112,20 @@ class RecommendCog(commands.Cog):
                     logger.error(f"Error fetching details for book \"{rec.get('title')}\": {e}")
                     # Continue with other recommendations
             
+            # Log the interaction with RAG
+            RAGService.log_interaction(
+                user_id=interaction.user.id,
+                query=preferences,
+                books_found=book_details,
+                command_type="recommend",
+                response_text=f"Recommended {len(book_details)} books"
+            )
+            
             # Create a response message
             response_content = f"📚 **Book Recommendations Based On Your Preferences**\n\nHere are some books you might enjoy based on your preferences: \"{preferences}\"\n"
+            
+            if user_prefs.get("total_interactions", 0) > 0:
+                response_content += f"\n💡 *Based on your {user_prefs['total_interactions']} previous searches, I've personalized these recommendations!*\n"
             
             # Create embeds for the books
             embeds = []
@@ -136,6 +165,16 @@ class RecommendCog(commands.Cog):
             
         except Exception as e:
             logger.error(f"Error executing recommend command: {e}")
+            
+            # Log the error interaction
+            RAGService.log_interaction(
+                user_id=interaction.user.id,
+                query=preferences,
+                books_found=[],
+                command_type="recommend",
+                response_text="Error occurred"
+            )
+            
             await interaction.followup.send(
                 "Sorry, I encountered an error while generating book recommendations. Please try again later."
             )
