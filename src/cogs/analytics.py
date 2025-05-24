@@ -19,7 +19,7 @@ class AnalyticsCog(commands.Cog):
         """
         Show user's search history and personalized insights
         """
-        await interaction.response.defer(ephemeral=True)
+        await interaction.response.defer()
         
         try:
             # Get user's search history
@@ -90,13 +90,12 @@ class AnalyticsCog(commands.Cog):
         except Exception as e:
             logger.error(f"Error executing myhistory command: {e}")
             await interaction.followup.send(
-                "Sorry, I couldn't retrieve your search history right now. Please try again later.",
-                ephemeral=True
+                "Sorry, I couldn't retrieve your search history right now. Please try again later."
             )
     
     @app_commands.command(
         name="analytics",
-        description="View system-wide usage analytics (Admin only)"
+        description="View system-wide usage analytics"
     )
     async def analytics(self, interaction: discord.Interaction):
         """
