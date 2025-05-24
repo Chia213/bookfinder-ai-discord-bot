@@ -158,7 +158,27 @@ The **Retrieval-Augmented Generation** system is the core innovation of this bot
 
 ## 📸 Screenshots
 
-*[Screenshots will be added here showing the bot in action]*
+### 🧠 **RAG System in Action - Personalized Recommendations**
+![RAG Personalized Recommendations](screenshots/rag-personalized-recommendations.png)
+*The bot learns from user history and provides personalized samurai book recommendations based on 10 previous searches*
+
+### 🔍 **AI-Powered Book Search with Rich Embeds**  
+![AI Book Search](screenshots/ai-book-search.png)
+*Natural language processing understands "murder mysteries" and provides contextual, intelligent responses*
+
+### 📚 **Professional Book Display with Metadata**
+![Professional Book Display](screenshots/professional-book-display.png)
+*Rich Discord embeds showcase book covers, descriptions, publication dates, and categories*
+
+### 📊 **User Analytics Dashboard - RAG Data Visualization**
+![User Analytics Dashboard](screenshots/user-analytics-dashboard.png)
+*Complete user journey tracking: 16 total searches, favorite genres analysis, discovered authors, and timestamped search history*
+
+> **🎯 Key Features Demonstrated:**
+> - **RAG Learning**: "Based on your 10 previous searches, I've personalized these recommendations!"
+> - **Smart AI Responses**: Contextual explanations with book suggestions  
+> - **User Analytics**: Genre preferences, author discovery, and search statistics
+> - **Professional UX**: Beautiful embeds with book covers and structured data
 
 ## 🤝 Contributing
 
@@ -178,3 +198,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **Google Books** for comprehensive book database
 - **Discord.py Community** for excellent documentation
 - **Open Library** for additional book metadata
+
+---
+
+**Built with ❤️ for book lovers everywhere**
