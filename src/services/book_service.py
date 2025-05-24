@@ -1,5 +1,6 @@
 import requests
 import logging
+import random
 from src import config
 
 logger = logging.getLogger('bookfinder.book')
@@ -32,16 +33,20 @@ class BookService:
             if params.get('general_query'):
                 query += params['general_query']
                 
-            # Default to a general search if no specific parameters were provided
+            # If no query built, use the general query directly
             if not query.strip():
-                query = params.get('general_query', 'popular books')
+                query = params.get('general_query', 'bestseller books')
+                
+            # Add some randomization to avoid same results
+            start_index = random.randint(0, 10)
                 
             # Make API request
             response = requests.get(
                 f"{config.GOOGLE_BOOKS_BASE_URL}/volumes",
                 params={
                     'q': query.strip(),
-                    'maxResults': 5,
+                    'maxResults': 10,  # Get more results for variety
+                    'startIndex': start_index,  # Add randomization
                     'key': config.GOOGLE_BOOKS_API_KEY
                 }
             )
@@ -129,7 +134,7 @@ class BookService:
         try:
             response = requests.get(
                 f"{config.OPEN_LIBRARY_BASE_URL}/search.json",
-                params={'q': query, 'limit': 5}
+                params={'q': query, 'limit': 10}
             )
             
             response.raise_for_status()

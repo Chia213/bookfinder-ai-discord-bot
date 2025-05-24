@@ -31,7 +31,7 @@ class OpenAIService:
                     {"role": "user", "content": prompt}
                 ],
                 max_tokens=config.MAX_TOKENS,
-                temperature=0.7,
+                temperature=0.9,
             )
             
             return response.choices[0].message.content
@@ -53,19 +53,7 @@ class OpenAIService:
         Returns:
             dict: Extracted search parameters
         """
-        system_prompt = """
-        You are a helpful AI assistant that extracts search parameters from user queries about books.
-        Extract the following information if present:
-        - Book title or partial title
-        - Author name
-        - Genre
-        - Topics or themes
-        - Publication year or time period
-        - Any other relevant search criteria
-        
-        Format your response as a JSON object with these fields.
-        Only include fields that you can extract from the query.
-        """
+        system_prompt = """        You are a helpful AI assistant that extracts search parameters from user queries about books.                IMPORTANT: Always include a "general_query" field with the user's original query.                Extract the following information if present:        - title: Book title or partial title        - author: Author name          - genre: Genre or category        - general_query: Always include the original user query                Format your response as a valid JSON object. Example:        {"title": "samurai", "genre": "historical fiction", "general_query": "samurai books"}                If you cannot extract specific fields, return:        {"general_query": "user's original query here"}        """
         
         try:
             response = await OpenAIService.generate_response(query, system_prompt)
