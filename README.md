@@ -3,7 +3,6 @@
 [![Python](https://img.shields.io/badge/Python-3.8+-blue?logo=python&logoColor=white)](https://python.org)
 [![Discord.py](https://img.shields.io/badge/Discord.py-2.3+-blue?logo=discord&logoColor=white)](https://discordpy.readthedocs.io/)
 [![OpenAI](https://img.shields.io/badge/OpenAI-GPT--3.5--turbo-green?logo=openai&logoColor=white)](https://openai.com)
-[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 An intelligent Discord bot powered by **Retrieval-Augmented Generation (RAG)** that learns from user interactions to provide personalized book recommendations. Features advanced AI capabilities, user analytics, and privacy-compliant data management.
 
