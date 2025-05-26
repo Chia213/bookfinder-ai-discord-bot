@@ -26,6 +26,9 @@ class RecommendCog(commands.Cog):
         """
         await interaction.response.defer()
         
+        book_details = []  # Initialize here for logging
+        success_response = None
+        
         try:
             # Check if user has previous preferences from RAG
             user_prefs = RAGService.get_user_preferences(interaction.user.id)
@@ -66,7 +69,12 @@ class RecommendCog(commands.Cog):
                 logger.error(f"Error parsing AI recommendations: {e}")
                 logger.info(f"Raw AI response: {ai_recommendation_json}")
                 
-                # Log the interaction even if parsing fails
+                # Send the raw response if parsing fails
+                await interaction.followup.send(
+                    f"Here are some book recommendations based on your preferences:\n\n{ai_recommendation_json}"
+                )
+                
+                # Log after successful response
                 RAGService.log_interaction(
                     user_id=interaction.user.id,
                     query=preferences,
@@ -74,16 +82,9 @@ class RecommendCog(commands.Cog):
                     command_type="recommend",
                     response_text=ai_recommendation_json[:200]
                 )
-                
-                # Send the raw response if parsing fails
-                await interaction.followup.send(
-                    f"Here are some book recommendations based on your preferences:\n\n{ai_recommendation_json}"
-                )
                 return
                 
             # Find details for the first 3 recommended books
-            book_details = []
-            
             for rec in recommendations[:3]:
                 try:
                     # Search for book details
@@ -111,15 +112,6 @@ class RecommendCog(commands.Cog):
                 except Exception as e:
                     logger.error(f"Error fetching details for book \"{rec.get('title')}\": {e}")
                     # Continue with other recommendations
-            
-            # Log the interaction with RAG
-            RAGService.log_interaction(
-                user_id=interaction.user.id,
-                query=preferences,
-                books_found=book_details,
-                command_type="recommend",
-                response_text=f"Recommended {len(book_details)} books"
-            )
             
             # Create a response message
             response_content = f"📚 **Book Recommendations Based On Your Preferences**\n\nHere are some books you might enjoy based on your preferences: \"{preferences}\"\n"
@@ -163,17 +155,28 @@ class RecommendCog(commands.Cog):
             # Send the response
             await interaction.followup.send(content=response_content, embeds=embeds)
             
-        except Exception as e:
-            logger.error(f"Error executing recommend command: {e}")
-            
-            # Log the error interaction
+            # Log successful interaction ONLY after everything works
+            success_response = f"Recommended {len(book_details)} books"
             RAGService.log_interaction(
                 user_id=interaction.user.id,
                 query=preferences,
-                books_found=[],
+                books_found=book_details,
                 command_type="recommend",
-                response_text="Error occurred"
+                response_text=success_response
             )
+            
+        except Exception as e:
+            logger.error(f"Error executing recommend command: {e}")
+            
+            # Only log error if we haven't already logged a success
+            if success_response is None:
+                RAGService.log_interaction(
+                    user_id=interaction.user.id,
+                    query=preferences,
+                    books_found=book_details,  # May be empty or partial
+                    command_type="recommend",
+                    response_text="Error occurred"
+                )
             
             await interaction.followup.send(
                 "Sorry, I encountered an error while generating book recommendations. Please try again later."

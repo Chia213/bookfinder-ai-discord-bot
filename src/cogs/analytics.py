@@ -4,6 +4,7 @@ from discord.ext import commands
 import logging
 from datetime import datetime, timedelta
 from src.services.rag_service import RAGService
+import json
 
 logger = logging.getLogger('bookfinder.commands.analytics')
 
@@ -194,11 +195,12 @@ class ClearHistoryView(discord.ui.View):
             return
         
         try:
-            # In a real implementation, we would remove user's entries from the log
-            # For this demonstration, we'll just acknowledge the request
+            # Actually implement data deletion for GDPR compliance
+            deleted_count = self._delete_user_data(str(self.user_id))
+            
             embed = discord.Embed(
                 title="✅ History Cleared",
-                description="Your search history has been cleared successfully.\n\nFuture searches will start building a new preference profile.",
+                description=f"Your search history has been cleared successfully.\n\n**Deleted:** {deleted_count} interactions\n\nFuture searches will start building a new preference profile.",
                 color=discord.Color.green()
             )
             
@@ -210,6 +212,51 @@ class ClearHistoryView(discord.ui.View):
                 "Sorry, there was an error clearing your history. Please try again later.",
                 ephemeral=True
             )
+    
+    def _delete_user_data(self, user_id: str) -> int:
+        """
+        Actually delete user data from the log file (GDPR compliance)
+        
+        Args:
+            user_id (str): User ID to delete data for
+            
+        Returns:
+            int: Number of interactions deleted
+        """
+        import os
+        from src.services.rag_service import RAGService
+        
+        if not os.path.exists(RAGService.LOG_FILE):
+            return 0
+            
+        # Read all lines and filter out user's data
+        remaining_lines = []
+        deleted_count = 0
+        
+        try:
+            with open(RAGService.LOG_FILE, "r", encoding='utf-8') as f:
+                for line in f:
+                    try:
+                        entry = json.loads(line.strip())
+                        if entry.get("user_id") == user_id:
+                            deleted_count += 1
+                        else:
+                            remaining_lines.append(line.strip())
+                    except json.JSONDecodeError:
+                        # Keep malformed lines
+                        remaining_lines.append(line.strip())
+            
+            # Write back the filtered data
+            with open(RAGService.LOG_FILE, "w", encoding='utf-8') as f:
+                for line in remaining_lines:
+                    f.write(line + "\n")
+                    
+            logger.info(f"GDPR: Deleted {deleted_count} interactions for user {user_id}")
+            return deleted_count
+            
+        except Exception as e:
+            logger.error(f"Error deleting user data: {e}")
+            raise
     
     @discord.ui.button(label="Cancel", style=discord.ButtonStyle.secondary)
     async def cancel_clear(self, interaction: discord.Interaction, button: discord.ui.Button):
