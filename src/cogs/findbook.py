@@ -30,6 +30,22 @@ class FindBookCog(commands.Cog):
             search_params = await OpenAIService.parse_book_query(query)
             logger.info(f"Parsed search parameters: {search_params}")
             
+            # Check if AI returned an error (for impossible queries)
+            if "error" in search_params:
+                error_message = search_params["error"]
+                
+                # Log the interaction with RAG
+                RAGService.log_interaction(
+                    user_id=interaction.user.id,
+                    query=query,
+                    books_found=[],
+                    command_type="findbook",
+                    response_text=error_message
+                )
+                
+                await interaction.followup.send(error_message)
+                return
+            
             # Search for books
             books = await BookService.search_books(search_params)
             
