@@ -56,24 +56,48 @@ class OpenAIService:
         system_prompt = """
         You are a helpful AI assistant that extracts search parameters from user queries about books.
         
-        IMPORTANT: Always include a "general_query" field with the user's original query.
+        IMPORTANT RULES:
+        1. If the query asks for books by people you don't know (like "my neighbor"/"min granne", "my friend"/"min vän", "my teacher"/"min lärare"), respond in the same language as the query:
+           - English: {"error": "I don't have information about books written by people in your personal life. Please provide the author's full name if you know it."}
+           - Swedish: {"error": "Jag har ingen information om böcker skrivna av personer i ditt privatliv. Ange författarens fullständiga namn om du vet det."}
         
-        Extract the following information if present:
+        2. If the query asks for impossible information (like future bestsellers, books based on personal mood without context), respond in the same language:
+           - English: {"error": "I can't predict future bestsellers or read your mind. Please be more specific about genres, authors, or themes you're interested in."}
+           - Swedish: {"error": "Jag kan inte förutsäga framtida bestsellers eller läsa dina tankar. Var mer specifik om genrer, författare eller teman du är intresserad av."}
+        
+        3. If the query is too vague or nonsensical, respond in the same language:
+           - English: {"error": "I need more specific information to help you find books. Try mentioning a genre, author, or theme you're interested in."}
+           - Swedish: {"error": "Jag behöver mer specifik information för att hjälpa dig hitta böcker. Försök nämna en genre, författare eller tema du är intresserad av."}
+        
+        For valid queries (in any language), extract the following information if present:
         - title: Book title or partial title
-        - author: Author name
+        - author: Author name (only if it's a real, known author)
         - genre: Genre or category
         - general_query: Always include the original user query
         
         Format your response as a valid JSON object. Example:
         {"title": "samurai", "genre": "historical fiction", "general_query": "samurai books"}
         
-        If you cannot extract specific fields, return:
+        If you cannot extract specific fields but the query is valid, return:
         {"general_query": "user's original query here"}
         """
         
         try:
             response = await OpenAIService.generate_response(query, system_prompt)
-            return json.loads(response)
+            
+            # Check if response is None or empty
+            if not response:
+                logger.warning(f"OpenAI returned empty response for query: {query}")
+                return {"general_query": query}
+            
+            # Try to parse JSON response
+            try:
+                parsed_response = json.loads(response)
+                return parsed_response
+            except json.JSONDecodeError as json_error:
+                logger.warning(f"Failed to parse JSON response: {response}. Error: {json_error}")
+                return {"general_query": query}
+                
         except Exception as e:
             logger.error(f"Error parsing book query: {e}")
             # Return basic object with full query as fallback
