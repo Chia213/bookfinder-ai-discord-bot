@@ -39,7 +39,7 @@ class BookHelpCog(commands.Cog):
             name="🔥 NEW: RAG System Commands",
             value="**`/myhistory`** - View your search history and preferences (private)\n" +
                   "**`/analytics`** - View system usage statistics\n" +
-                  "**`/clearhistory`** - Clear your personal data (GDPR compliance)",
+                  "**`/clearhistory`** - Clear your personal data",
             inline=False
         )
         
